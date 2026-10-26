@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CSS Art Gallery</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700&display=swap" rel="stylesheet">
+<style>
+:root{--wall:#e4e7f3;--card:#fff;--ink:#1d1b3a;--mute:#5d5b7d;--line:#cfd3e6;--on:#1d1b3a;--onfg:#fff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--wall:#14132a;--card:#1f1d3d;--ink:#ecebff;--mute:#a4a2cc;--line:#37345f;--on:#ecebff;--onfg:#14132a}}
+:root[data-theme="dark"]{--wall:#14132a;--card:#1f1d3d;--ink:#ecebff;--mute:#a4a2cc;--line:#37345f;--on:#ecebff;--onfg:#14132a}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--wall);color:var(--ink);font-family:'Bricolage Grotesque',system-ui,sans-serif;line-height:1.45;padding:clamp(18px,4vw,48px)}
+.sw{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+header{max-width:1040px;margin:0 auto 22px}
+h1{font-size:clamp(2rem,6vw,3.4rem);line-height:1;margin:0 0 8px;font-weight:700;letter-spacing:-.02em}
+header p{margin:0;color:var(--mute);max-width:56ch}
+.tabs{max-width:1040px;margin:0 auto 22px;display:flex;flex-wrap:wrap;gap:8px}
+.tabs label{cursor:pointer;padding:6px 16px;border:1.5px solid var(--line);border-radius:99px;font-weight:700;font-size:.95rem}
+.tabs label:hover{border-color:var(--ink)}
+#c-all:checked~.tabs [for=c-all],#c-an:checked~.tabs [for=c-an],#c-ls:checked~.tabs [for=c-ls],#c-ab:checked~.tabs [for=c-ab]{background:var(--on);color:var(--onfg);border-color:var(--on)}
+input:focus-visible~.tabs{outline:2px dashed var(--ink);outline-offset:4px}
+#c-an:checked~.grid .card:not(.an),#c-ls:checked~.grid .card:not(.ls),#c-ab:checked~.grid .card:not(.ab){display:none}
+.grid{max-width:1040px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px}
+.card{background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:14px 14px 16px}
+.card h2{font-size:1.1rem;margin:12px 0 2px}
+.card p{margin:0;color:var(--mute);font-size:.88rem}
+.st{position:relative;width:220px;height:220px;max-width:100%;margin:0 auto;overflow:hidden;border-radius:12px}
+.st *{position:absolute}
+.st *::before,.st *::after{content:"";position:absolute}
+foot,.note{max-width:1040px;margin:22px auto 0;color:var(--mute);font-size:.9rem}
+
+/* 1. cat */
+.cat{background:#cfe3e8}
+.cat .b{left:55px;top:140px;width:110px;height:90px;background:#d97f2a;border-radius:50% 50% 0 0}
+.cat .h{left:50px;top:70px;width:120px;height:100px;background:#e8903a;border-radius:50% 50% 45% 45%;transform-origin:50% 100%;transition:transform .4s}
+.cat .h::before,.cat .h::after{top:-24px;border:20px solid transparent;border-bottom:34px solid #e8903a;border-top:0;transition:transform .25s}
+.cat .h::before{left:4px;transform:rotate(-12deg)}
+.cat .h::after{right:4px;transform:rotate(12deg)}
+.cat .e{left:30px;top:38px;width:16px;height:20px;background:#2b2b2b;border-radius:50%;box-shadow:44px 0 #2b2b2b}
+.cat .n{left:54px;top:62px;border:6px solid transparent;border-top:8px solid #e0606f;border-bottom:0}
+.cat .w{left:-30px;top:70px;width:34px;height:2px;background:#fff;box-shadow:0 8px #fff,146px 0 #fff,146px 8px #fff}
+.cat:hover .h{transform:rotate(-8deg)}
+.cat:hover .h::before{transform:rotate(-30deg)}
+.cat:hover .h::after{transform:rotate(26deg)}
+.cat:hover .e{animation:blink .9s ease-in-out infinite}
+@keyframes blink{0%,60%,100%{transform:scaleY(1)}75%{transform:scaleY(.1)}}
+
+/* 2. owl */
+.owl{background:#3b3560}
+.owl .br{left:30px;top:178px;width:160px;height:10px;background:#5b3a24;border-radius:5px}
+.owl .ob{left:60px;top:44px;width:100px;height:140px;background:#8a5a3b;border-radius:50% 50% 45% 45%;transform-origin:50% 100%;transition:transform .5s}
+.owl .ob::before,.owl .ob::after{top:-10px;border:12px solid transparent;border-bottom:26px solid #8a5a3b;border-top:0}
+.owl .ob::before{left:6px;transform:rotate(-14deg)}
+.owl .ob::after{right:6px;transform:rotate(14deg)}
+.owl .bl{left:78px;top:112px;width:64px;height:70px;background:#e6c9a0;border-radius:50%}
+.owl .oe{left:68px;top:76px;width:34px;height:34px;background:#fff;border-radius:50%;box-shadow:46px 0 #fff,0 0 0 4px #f2b84b,46px 0 0 4px #f2b84b}
+.owl .op{left:78px;top:86px;width:14px;height:14px;background:#222;border-radius:50%;box-shadow:46px 0 #222;transition:transform .35s}
+.owl .bk{left:100px;top:112px;border:10px solid transparent;border-top:16px solid #f2b84b;border-bottom:0}
+.owl:hover .op{transform:translate(7px,4px)}
+.owl:hover .ob{transform:rotate(-4deg)}
+
+/* 3. mountains */
+.mt{background:linear-gradient(#f6a05a,#f7d58a 60%,#fbe8c0)}
+.mt .sun{left:75px;top:76px;width:70px;height:70px;background:#fff3b0;border-radius:50%;box-shadow:0 0 40px #fff3b0;transition:transform 1s ease}
+.mt .m1{left:20px;top:100px;border:90px solid transparent;border-top:0;border-bottom:110px solid #7a4a6e}
+.mt .m1::after{left:-22px;top:0;border:22px solid transparent;border-top:0;border-bottom:30px solid #fff}
+.mt .m2{left:100px;top:126px;border:80px solid transparent;border-top:0;border-bottom:90px solid #5c3560}
+.mt .g{left:0;bottom:0;width:100%;height:48px;background:#2f2147}
+.mt:hover .sun{transform:translateY(-44px)}
+
+/* 4. night */
+.nt{background:#12163a}
+.nt .s{left:30px;top:40px;width:3px;height:3px;background:#fff;border-radius:50%;box-shadow:50px 30px #fff,95px -8px 0 1px #fff,20px 70px #fff,130px 90px #fff,170px 20px #fff,70px 100px #fff}
+.nt .mn{left:122px;top:34px;width:60px;height:60px;border-radius:50%;box-shadow:inset -16px -4px 0 0 #ffeeb0,0 0 24px rgba(255,238,176,.35);transition:transform 1s}
+.nt .h1{left:-40px;top:150px;width:200px;height:200px;background:#1f2a5c;border-radius:50%}
+.nt .h2{left:80px;top:165px;width:220px;height:200px;background:#172046;border-radius:50%}
+.nt .t{left:160px;top:118px;border:16px solid transparent;border-top:0;border-bottom:36px solid #0d2a2f}
+.nt .t::after{left:-20px;top:14px;border:20px solid transparent;border-top:0;border-bottom:40px solid #0d2a2f}
+.nt:hover .s{animation:tw 1s ease-in-out infinite}
+.nt:hover .mn{transform:rotate(-40deg)}
+@keyframes tw{50%{opacity:.25}}
+
+/* 5. rings */
+.rg{background:#e9f0ff}
+.rg .r{left:90px;top:90px;width:40px;height:40px;background:#ff4d6d;border-radius:50%;box-shadow:0 0 0 14px #ffb703,0 0 0 28px #3a86ff,0 0 0 42px #8338ec,0 0 0 56px #06d6a0;transition:box-shadow .6s ease}
+.rg:hover .r{box-shadow:6px 0 0 14px #ffb703,12px 0 0 28px #3a86ff,18px 0 0 42px #8338ec,24px 0 0 56px #06d6a0}
+
+/* 6. grid */
+.gd{background:#1b1b2f}
+.gd .q{left:50px;top:50px;width:40px;height:40px;background:#ff595e;border-radius:6px;transition:border-radius .5s,transform .5s;box-shadow:60px 0 #ffca3a,120px 0 #8ac926,0 60px #1982c4,60px 60px #6a4c93,120px 60px #ff595e,0 120px #ffca3a,60px 120px #8ac926,120px 120px #1982c4}
+.gd:hover .q{border-radius:50%;transform:scale(.9)}
+
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<input class="sw" type="radio" name="c" id="c-all" checked aria-label="All">
+<input class="sw" type="radio" name="c" id="c-an" aria-label="Animals">
+<input class="sw" type="radio" name="c" id="c-ls" aria-label="Landscapes">
+<input class="sw" type="radio" name="c" id="c-ab" aria-label="Abstract">
+
+<header>
+  <h1>Six drawings, zero images</h1>
+  <p>Every picture here is built from empty divs, borders, box-shadows and pseudo-elements. Hover or tap a drawing to animate it.</p>
+</header>
+
+<div class="tabs" role="group" aria-label="Category">
+  <label for="c-all">All</label>
+  <label for="c-an">Animals</label>
+  <label for="c-ls">Landscapes</label>
+  <label for="c-ab">Abstract</label>
+</div>
+
+<main class="grid">
+  <article class="card an">
+    <div class="st cat" role="img" aria-label="An orange cat face"><i class="b"></i><i class="h"><i class="e"></i><i class="n"></i><i class="w"></i></i></div>
+    <h2>Tabby cat</h2><p>Border triangles for ears and nose, box-shadow for the second eye and whiskers. Hover to make it blink.</p>
+  </article>
+
+  <article class="card an">
+    <div class="st owl" role="img" aria-label="An owl on a branch"><i class="br"></i><i class="ob"></i><i class="bl"></i><i class="oe"></i><i class="op"></i><i class="bk"></i></div>
+    <h2>Night owl</h2><p>Eye rings come from stacked box-shadows. Hover and the pupils follow you.</p>
+  </article>
+
+  <article class="card ls">
+    <div class="st mt" role="img" aria-label="Sun rising behind two mountains"><i class="sun"></i><i class="m1"></i><i class="m2"></i><i class="g"></i></div>
+    <h2>Sunrise ridge</h2><p>Mountains are border triangles, the snow cap is a pseudo-element. Hover to lift the sun.</p>
+  </article>
+
+  <article class="card ls">
+    <div class="st nt" role="img" aria-label="Crescent moon over hills and a pine tree"><i class="s"></i><i class="mn"></i><i class="h1"></i><i class="h2"></i><i class="t"></i></div>
+    <h2>Moonlit hills</h2><p>The crescent is one inset box-shadow, and six stars share a single element. Hover to twinkle.</p>
+  </article>
+
+  <article class="card ab">
+    <div class="st rg" role="img" aria-label="Concentric colored rings"><i class="r"></i></div>
+    <h2>Eclipse rings</h2><p>One 40px circle with four spread shadows. Hover to push the rings off-centre.</p>
+  </article>
+
+  <article class="card ab">
+    <div class="st gd" role="img" aria-label="Three by three grid of colored squares"><i class="q"></i></div>
+    <h2>Nine squares</h2><p>A single square plus eight shadow offsets. Hover to turn the grid into dots.</p>
+  </article>
+</main>
+<p class="note">Open the page source: the only markup behind each drawing is a handful of empty &lt;i&gt; tags.</p>
+</body>
+</html>

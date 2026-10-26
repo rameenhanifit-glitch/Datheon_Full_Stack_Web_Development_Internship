@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TaskFlow | Task Manager</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap">
+      <span class="brand">TaskFlow</span>
+      <span class="tagline">Task manager</span>
+    </div>
+  </header>
+
+  <div class="wrap layout">
+    <aside class="sidebar">
+      <h2>Views</h2>
+      <nav id="filters" aria-label="Filter tasks by status">
+        <button data-filter="all" class="active">All <span id="n-all">0</span></button>
+        <button data-filter="active">Active <span id="n-active">0</span></button>
+        <button data-filter="completed">Completed <span id="n-completed">0</span></button>
+      </nav>
+    </aside>
+
+    <main>
+      <form id="task-form" class="panel">
+        <label class="field grow">
+          <span>Task</span>
+          <input type="text" id="task-title" placeholder="e.g. Finish assignment" maxlength="120" required>
+        </label>
+        <label class="field">
+          <span>Category</span>
+          <select id="task-category">
+            <option>Work</option>
+            <option>Personal</option>
+            <option>Study</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Due date</span>
+          <input type="date" id="task-due">
+        </label>
+        <button type="submit" id="submit-btn" class="primary">Add task</button>
+        <button type="button" id="cancel-btn" class="ghost" hidden>Cancel</button>
+      </form>
+
+      <div class="listhead">
+        <input type="search" id="search" placeholder="Search tasks" aria-label="Search tasks">
+      </div>
+
+      <ul id="task-list"></ul>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Skycast | Live Weather</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-clear-day">
+
+  <!-- Animated weather scene (filled by script.js) -->
+  <div id="scene" aria-hidden="true"></div>
+
+  <div class="page">
+    <header class="header">
+      <div class="brand">
+        <svg viewBox="0 0 32 32" width="30" height="30" aria-hidden="true">
+          <circle cx="13" cy="12" r="6" fill="#ffd166"/>
+          <path d="M9 24a5 5 0 0 1 .8-9.9A7 7 0 0 1 23 16a4 4 0 0 1-.5 8z" fill="#fff"/>
+        </svg>
+        Skycast
+      </div>
+      <form id="search-form" class="search">
+        <input type="text" id="city-input" placeholder="Search any city..." autocomplete="off" aria-label="City name">
+        <button type="submit">Search</button>
+      </form>
+    </header>
+
+    <main>
+      <p id="demo-note" class="demo-note" hidden>Showing demo data. Add your OpenWeatherMap API key in script.js to get live weather.</p>
+      <div id="loader" class="loader" hidden><div class="spinner"></div><p>Fetching live weather...</p></div>
+      <p id="error" class="error" hidden></p>
+
+      <section id="welcome" class="welcome">
+        <h1>Weather, anywhere.</h1>
+        <p>Search a city to see live conditions, sunrise and sunset, and the next five days.</p>
+        <div class="quick">
+          <button type="button" data-city="Quetta">Quetta</button>
+          <button type="button" data-city="Karachi">Karachi</button>
+          <button type="button" data-city="London">London</button>
+          <button type="button" data-city="Tokyo">Tokyo</button>
+          <button type="button" data-city="New York">New York</button>
+        </div>
+      </section>
+
+      <section id="result" hidden>
+        <div class="glass hero">
+          <div class="hero-left">
+            <p class="hero-date" id="date"></p>
+            <h2 class="hero-city" id="city-name"></h2>
+            <p class="hero-temp"><span id="temp"></span><small>°C</small></p>
+            <p class="hero-desc" id="desc"></p>
+            <p class="hero-range" id="range"></p>
+          </div>
+          <img id="icon" class="hero-icon" alt="" width="160" height="160">
+        </div>
+
+        <div class="stats">
+          <div class="glass stat" style="--g1:#00c6ff;--g2:#0072ff">
+            <span class="chip"><svg viewBox="0 0 24 24"><path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/></svg></span>
+            <div><span class="label">Humidity</span><strong id="humidity"></strong></div>
+          </div>
+          <div class="glass stat" style="--g1:#38ef7d;--g2:#11998e">
+            <span class="chip"><svg viewBox="0 0 24 24"><path d="M3 8h11a3 3 0 1 0-3-3M3 12h16a3 3 0 1 1-3 3M3 16h8"/></svg></span>
+            <div><span class="label">Wind speed</span><strong id="wind"></strong></div>
+          </div>
+          <div class="glass stat" style="--g1:#ffb347;--g2:#ff8008">
+            <span class="chip"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 12l4-4M12 6v1M6 12h1M18 12h-1"/></svg></span>
+            <div><span class="label">Pressure</span><strong id="pressure"></strong></div>
+          </div>
+          <div class="glass stat" style="--g1:#b06ab3;--g2:#4568dc">
+            <span class="chip"><svg viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></span>
+            <div><span class="label">Visibility</span><strong id="visibility"></strong></div>
+          </div>
+          <div class="glass stat" style="--g1:#ff9a44;--g2:#fc6076">
+            <span class="chip"><svg viewBox="0 0 24 24"><path d="M3 19h18M7 19a5 5 0 0 1 10 0M12 4v5M9.5 6.5L12 4l2.5 2.5"/></svg></span>
+            <div><span class="label">Sunrise</span><strong id="sunrise"></strong></div>
+          </div>
+          <div class="glass stat" style="--g1:#ff5e98;--g2:#8e2de2">
+            <span class="chip"><svg viewBox="0 0 24 24"><path d="M3 19h18M7 19a5 5 0 0 1 10 0M12 9V4M9.5 6.5L12 9l2.5-2.5"/></svg></span>
+            <div><span class="label">Sunset</span><strong id="sunset"></strong></div>
+          </div>
+        </div>
+
+        <h3 class="section-title">Next 5 days</h3>
+        <div class="forecast" id="forecast"></div>
+      </section>
+    </main>
+
+    <footer class="footer">Data from OpenWeatherMap</footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

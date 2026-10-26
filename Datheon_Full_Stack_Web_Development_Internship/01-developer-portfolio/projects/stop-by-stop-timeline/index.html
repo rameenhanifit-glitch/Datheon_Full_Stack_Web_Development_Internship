@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Stop by stop: a scrollable timeline</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f1f6f5;--card:#fff;--ink:#12263a;--mute:#4a6072;--line:#d3dfe2;--code:#1d4ed8;--learn:#15803d;--life:#c2410c;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);background:#f1f6f5}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0c1a22;--card:#14262f;--ink:#e8f1f5;--mute:#9db4c2;--line:#26404d;--code:#7aa7ff;--learn:#4ade80;--life:#ffa24d;background:#0c1a22}}
+:root[data-theme="dark"]{--bg:#0c1a22;--card:#14262f;--ink:#e8f1f5;--mute:#9db4c2;--line:#26404d;--code:#7aa7ff;--learn:#4ade80;--life:#ffa24d;background:#0c1a22}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Archivo',system-ui,sans-serif;line-height:1.5;padding:clamp(18px,4vw,48px)}
+.sw{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+main{max-width:880px;margin:0 auto}
+h1{font-size:clamp(2.4rem,8vw,4.4rem);line-height:.95;margin:0 0 12px;font-weight:800;letter-spacing:-.035em}
+.lead{margin:0 0 28px;color:var(--mute);max-width:56ch}
+
+/* commit bars */
+.pulse{padding:18px 20px 12px;border:1.5px solid var(--line);border-radius:16px;background:var(--card);margin-bottom:26px}
+.pulse h2{font-size:1rem;margin:0 0 14px;font-weight:600}
+.bars{display:flex;align-items:flex-end;gap:6px;height:96px;margin-bottom:22px}
+.bars i{position:relative;flex:1;height:var(--h);background:var(--code);border-radius:5px 5px 0 0;transform-origin:bottom;animation:up .7s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i)*45ms)}
+.bars i::after{content:attr(data-m);position:absolute;top:100%;left:50%;transform:translateX(-50%);padding-top:4px;font-size:.75rem;font-style:normal;color:var(--mute)}
+.bars i:hover{filter:brightness(1.25)}
+@keyframes up{from{transform:scaleY(0)}}
+
+/* filters */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:30px}
+.chips label{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border:1.5px solid var(--line);border-radius:99px;font-weight:600;font-size:.95rem;cursor:pointer;background:var(--card)}
+.chips label::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--d,var(--ink))}
+.chips label:hover{border-color:var(--ink)}
+#f-all:checked~.chips [for=f-all],#f-code:checked~.chips [for=f-code],#f-learn:checked~.chips [for=f-learn],#f-life:checked~.chips [for=f-life]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+input:focus-visible~.chips{outline:3px solid var(--code);outline-offset:4px;border-radius:12px}
+#f-code:checked~.tl .stop:not(.code),#f-learn:checked~.tl .stop:not(.learn),#f-life:checked~.tl .stop:not(.life){display:none}
+
+/* timeline */
+.tl{--rx:20px;position:relative;padding-bottom:20px}
+.tl::before,.fill{content:"";position:absolute;left:var(--rx);top:0;bottom:0;width:10px;margin-left:-5px;border-radius:5px}
+.tl::before{background:var(--line)}
+.fill{background:linear-gradient(var(--code),var(--learn) 55%,var(--life));transform-origin:top}
+.stop{--c:var(--ink);position:relative;display:grid;grid-template-columns:40px 1fr;grid-template-areas:"node when" "node card";column-gap:14px;margin-bottom:24px}
+.stop.code{--c:var(--code)}.stop.learn{--c:var(--learn)}.stop.life{--c:var(--life)}
+.when{grid-area:when;font-weight:600;color:var(--mute);margin-bottom:6px;font-size:.95rem}
+.node{grid-area:node;justify-self:center;width:30px;height:30px;margin-top:2px;border-radius:50%;background:var(--card);border:7px solid var(--c);position:relative;z-index:1;transition:background .25s,transform .25s}
+.stop:hover .node{animation:ring 1.1s ease-out infinite}
+.stop:has(details[open]) .node{background:var(--c);transform:scale(1.15)}
+@keyframes ring{from{box-shadow:0 0 0 0 var(--c)}to{box-shadow:0 0 0 16px transparent}}
+.card{grid-area:card;background:var(--card);border:1.5px solid var(--line);border-left:6px solid var(--c);border-radius:14px;transition:transform .2s,box-shadow .2s}
+.stop:hover .card{transform:translateX(4px);box-shadow:0 10px 28px rgba(18,38,58,.14)}
+summary{list-style:none;cursor:pointer;padding:16px 46px 16px 20px;position:relative}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"";position:absolute;right:20px;top:26px;width:9px;height:9px;border-right:2.5px solid var(--mute);border-bottom:2.5px solid var(--mute);transform:rotate(45deg);transition:transform .25s}
+details[open] summary::after{transform:rotate(-135deg);top:30px}
+summary:focus-visible{outline:3px solid var(--code);outline-offset:2px;border-radius:10px}
+.tag{font-weight:800;font-size:.85rem;color:var(--c)}
+h3{margin:2px 0 4px;font-size:1.25rem;line-height:1.2}
+summary p{margin:0;color:var(--mute)}
+.more{padding:0 20px 18px;animation:fade .35s ease both}
+.more p{margin:0 0 10px}
+.more .meta{font-size:.9rem;color:var(--mute);margin:0;padding-top:10px;border-top:1px dashed var(--line)}
+@keyframes fade{from{opacity:0;transform:translateY(-6px)}}
+.end{display:flex;align-items:center;gap:14px;margin-left:calc(var(--rx) - 15px);font-weight:600;color:var(--mute)}
+.end i{width:30px;height:30px;border-radius:50%;border:7px solid var(--life);background:var(--life);flex:none;position:relative;z-index:1}
+.end span{margin-left:0}
+footer{margin-top:34px;padding-top:16px;border-top:1.5px solid var(--line);color:var(--mute);font-size:.92rem;max-width:64ch}
+code{font:.88em ui-monospace,Menlo,Consolas,monospace}
+
+@media (min-width:760px){
+  .tl{--rx:138px}
+  .stop{grid-template-columns:110px 56px 1fr;grid-template-areas:"when node card";column-gap:0}
+  .when{text-align:right;padding:6px 12px 0 0;margin:0}
+  .node{margin-top:12px}
+  .card{margin-left:6px}
+  .end{margin-left:calc(var(--rx) - 15px)}
+}
+/* scroll-driven animation, with a plain fallback */
+@supports (animation-timeline:view()){
+  .fill{animation:grow linear both;animation-timeline:scroll(root)}
+  .stop{animation:rise linear both;animation-timeline:view();animation-range:entry 0% entry 45%}
+  @keyframes grow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+  @keyframes rise{from{opacity:0;transform:translateY(46px)}to{opacity:1;transform:none}}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<input class="sw" type="radio" name="f" id="f-all" checked aria-label="Show all stops">
+<input class="sw" type="radio" name="f" id="f-code" aria-label="Show code stops">
+<input class="sw" type="radio" name="f" id="f-learn" aria-label="Show learning stops">
+<input class="sw" type="radio" name="f" id="f-life" aria-label="Show life stops">
+
+<main>
+  <h1>Stop by stop</h1>
+  <p class="lead">A timeline of commits, courses and life events. Scroll to ride the line, and open any stop for the details.</p>
+
+  <section class="pulse" aria-label="Commits per month in 2025">
+    <h2>Commits per month, 2025</h2>
+    <div class="bars" role="img" aria-label="Commits per month: January 18, February 26, March 12, April 31, May 44, June 38, July 9, August 15, September 52, October 47, November 33, December 21">
+      <i style="--h:34%;--i:0" data-m="J" title="Jan: 18"></i><i style="--h:50%;--i:1" data-m="F" title="Feb: 26"></i><i style="--h:23%;--i:2" data-m="M" title="Mar: 12"></i><i style="--h:60%;--i:3" data-m="A" title="Apr: 31"></i><i style="--h:85%;--i:4" data-m="M" title="May: 44"></i><i style="--h:73%;--i:5" data-m="J" title="Jun: 38"></i><i style="--h:17%;--i:6" data-m="J" title="Jul: 9"></i><i style="--h:29%;--i:7" data-m="A" title="Aug: 15"></i><i style="--h:100%;--i:8" data-m="S" title="Sep: 52"></i><i style="--h:90%;--i:9" data-m="O" title="Oct: 47"></i><i style="--h:63%;--i:10" data-m="N" title="Nov: 33"></i><i style="--h:40%;--i:11" data-m="D" title="Dec: 21"></i>
+    </div>
+  </section>
+
+  <div class="chips" role="group" aria-label="Filter stops">
+    <label for="f-all">All stops</label>
+    <label for="f-code" style="--d:var(--code)">Code</label>
+    <label for="f-learn" style="--d:var(--learn)">Learning</label>
+    <label for="f-life" style="--d:var(--life)">Life</label>
+  </div>
+
+  <div class="tl">
+    <div class="fill" aria-hidden="true"></div>
+
+    <article class="stop life">
+      <time class="when" datetime="2022-09">Sep 2022</time><i class="node" aria-hidden="true"></i>
+      <details class="card"><summary><span class="tag">Life</span><h3>Started a computing degree</h3><p>New city, new routine of labs and late-night debugging.</p></summary>
+        <div class="more"><p>Orientation week ended with a promise to build one thing every month. Most of what follows on this line came from that promise.</p><p class="meta">Location: campus &middot; Outcome: a study group that is still going</p></div></details>
+    </article>
+
+    <article class="stop code">
+      <time class="when" datetime="2023-01">Jan 2023</time><i class="node" aria-hidden="true"></i>
+      <details class="card"><summary><span class="tag">Code</span><h3>First commit on GitHub</h3><p>A tiny to-do app, pushed with a very long commit message.</p></summary>
+        <div class="more"><p>The repository had one file and no README. Reading it back later showed exactly how much I had to learn about naming things.</p><p class="meta">Repo: todo-cli &middot; Language: Python &middot; Commits: 7</p></div></details>
+    </article>
+
+    <article class="stop learn">
+      <time class="when" datetime="2023-06">Jun 2023</time><i class="node" aria-hidden="true"></i>
+      <details class="card"><summary><span class="tag">Learning</span><h3>Finished my first database course</h3><p>Designed a normalised schema and wrote my first joins.</p></summary>
+        <div class="more"><p>The course project was a course-registration system. Drawing the ER diagram on paper before writing any SQL saved me days.</p><p class="meta">Topics: SQL, normalisation, indexing &middot; Grade: A</p></div></details>
+    </article>
+
+    <article class="stop code">
+      <time class="when" datetime="2023-11">Nov 2023</time><i class="node" aria-hidden="true"></i>
+      <details class="card"><summary><span class="tag">Code</span><h3>Shipped a personal website</h3><p>Plain HTML and CSS, hosted for free, loads in under a second.</p></summary>
+        <div class="more"><p>No framework, no build step. It taught me how much a page can do with just semantic markup and a handful of CSS rules.</p><p class="meta">Repo: portfolio &middot; Stack: HTML, CSS &middot; Commits: 41</p></div></details>
+    </article>
+
+    <article class="stop learn">
+      <time class="when" datetime="2024-03">Mar 2024</time><i class="node" aria-hidden="true"></i>
+      <details class="card"><summary><span class="tag">Learning</span><h3>First capture-the-flag event</h3><p>Solved three challenges and learned what I do not know yet.</p></summary>
+        <div class="more"><p>Our team finished in the middle of the table. Reading other teams' write-ups afterwards taught me more than the event did.</p><p class="meta">Topics: web exploits, cryptography basics &middot; Team size: 4</p></div></details>
+    </article>
+
+    <article class="stop life">
+      <time class="when" datetime="2024-08">Aug 2024</time><i class="node" aria-hidden="true"></i>
+      <details class="card"><summary><span class="tag">Life</span><h3>Joined the student tech society</h3><p>From attending talks to organising them.</p></summary>
+        <div class="more"><p>I volunteered to run the weekly workshop schedule. Explaining a topic to forty people is the fastest way to find the gaps in your own understanding.</p><p class="meta">Role: workshop lead &middot; Sessions run: 12</p></div></details>
+    </article>
+
+    <article class="stop code">
+      <time class="when" datetime="2025-05">May 2025</time><i class="node" aria-hidden="true"></i>
+      <details class="card"><summary><span class="tag">Code</span><h3>A 100-day commit streak</h3><p>Small changes every day, and a green wall of squares.</p></summary>
+        <div class="more"><p>Most days were tiny: a test, a typo, a refactor. The streak itself mattered less than the habit of finishing something small each day.</p><p class="meta">Longest streak: 100 days &middot; Commits that month: 44</p></div></details>
+    </article>
+
+    <article class="stop learn">
+      <time class="when" datetime="2025-09">Sep 2025</time><i class="node" aria-hidden="true"></i>
+      <details class="card"><summary><span class="tag">Learning</span><h3>Started the final-year project</h3><p>A security tool, a database, and a deadline.</p></summary>
+        <div class="more"><p>My busiest month of the year: 52 commits. The project brings together everything on this line, from the first schema to the first CTF.</p><p class="meta">Status: in progress &middot; Supervisor meetings: weekly</p></div></details>
+    </article>
+
+    <div class="end"><i aria-hidden="true"></i><span>You are here. The next stop is yours to add.</span></div>
+  </div>
+
+  <footer>
+    <p>These stops are sample data. To use your own, copy a <code>&lt;article class="stop code"&gt;</code> block and change the class to <code>learn</code> or <code>life</code>, then edit the date, title and details. For the bars, set each bar's <code>--h</code> to a percentage of your busiest month.</p>
+  </footer>
+</main>
+</body>
+</html>
