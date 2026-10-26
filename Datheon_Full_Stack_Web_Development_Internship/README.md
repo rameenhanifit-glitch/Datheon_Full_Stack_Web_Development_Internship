@@ -41,6 +41,7 @@ Live version: https://portfolio-pearl-eta-8f61hvos84.vercel.app/
 ```
 Datheon_Full_Stack_Web_Development_Internship/
 |-- README.md
+|-- index.html (start page linking to the three projects)
 |-- screenshots/
 |-- 01-developer-portfolio/
 |   |-- index.html
